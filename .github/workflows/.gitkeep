@@ -1,0 +1,2 @@
+<create_file path="/home/ubuntu/repos/KumoRFM-Typescript-SDK/supabase/functions/_shared/auth.ts">
+export { authenticateUser } from './utils.ts';
