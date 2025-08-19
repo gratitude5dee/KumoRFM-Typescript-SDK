@@ -1,7 +1,7 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { z } from 'npm:zod@3.22.0';
 import { authenticateUser } from '../_shared/auth.ts';
-import { createResponse, createAPIError } from '../_shared/responses.ts';
+import { createAPIError, createResponse } from '../_shared/responses.ts';
 import { corsHeaders } from '../_shared/cors.ts';
 import { SerializedGraphSchema } from '../_shared/schemas.ts';
 import { deserializeGraph } from '../_shared/sdk.ts';
@@ -31,13 +31,13 @@ serve(async (req: Request) => {
       return createResponse(
         undefined,
         createAPIError('BAD_REQUEST', 'Invalid graph structure', { errors: error.errors }),
-        400
+        400,
       );
     }
     return createResponse(
       undefined,
       createAPIError('INTERNAL', error instanceof Error ? error.message : 'Unknown error'),
-      500
+      500,
     );
   }
 });

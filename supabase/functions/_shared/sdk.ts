@@ -1,10 +1,4 @@
-import {
-  LocalTable,
-  LocalGraph,
-  KumoRFM,
-  PQLBuilder,
-  type RFMConfig,
-} from '../../../src/index.ts';
+import { KumoRFM, LocalGraph, LocalTable, PQLBuilder, type RFMConfig } from '../../../src/index.ts';
 import type { SerializedGraph, SerializedTable } from './types';
 
 export function deserializeTable(serialized: SerializedTable): LocalTable {
@@ -26,7 +20,7 @@ export function deserializeGraph(serialized: SerializedGraph): LocalGraph {
 
 export function serializeGraph(graph: LocalGraph): SerializedGraph {
   return {
-    tables: graph.tables.map(table => ({
+    tables: graph.tables.map((table) => ({
       name: table.name,
       data: table.data,
       metadata: table.metadata,

@@ -1,6 +1,13 @@
-import { DataFrameUtils } from '../utils/data';
-import { DataError, ValidationError } from '../api/errors';
-import { ColumnMetadata, SemanticType, TableMetadata, TableSchema, ValidationResult, ValidationWarning } from './types';
+import { DataFrameUtils } from '../utils/data.js';
+import { DataError, ValidationError } from '../api/errors.js';
+import {
+  ColumnMetadata,
+  SemanticType,
+  TableMetadata,
+  TableSchema,
+  ValidationResult,
+  ValidationWarning,
+} from './types.js';
 
 export class LocalTable<T = Record<string, any>> {
   private _data: T[];
@@ -13,7 +20,7 @@ export class LocalTable<T = Record<string, any>> {
     this._name = name;
     this._metadata = {
       semanticTypes: {},
-      ...metadata
+      ...metadata,
     };
   }
 
@@ -55,7 +62,7 @@ export class LocalTable<T = Record<string, any>> {
     const semanticTypes: Record<string, SemanticType> = {};
 
     for (const columnName of this.columns) {
-      const columnData = this._data.map(row => (row as any)[columnName]);
+      const columnData = this._data.map((row) => (row as any)[columnName]);
       const columnMeta = DataFrameUtils.analyzeColumn(columnData, columnName);
       columns.push(columnMeta);
 
@@ -86,7 +93,7 @@ export class LocalTable<T = Record<string, any>> {
       columns,
       relationships: [],
       rowCount: this._data.length,
-      metadata: this._metadata
+      metadata: this._metadata,
     };
 
     return this;
@@ -122,7 +129,7 @@ export class LocalTable<T = Record<string, any>> {
       errors.push({
         type: 'MISSING_PRIMARY_KEY',
         message: `Table ${this._name} is missing a primary key`,
-        table: this._name
+        table: this._name,
       });
     }
 
@@ -134,7 +141,7 @@ export class LocalTable<T = Record<string, any>> {
             type: 'HIGH_NULL_RATE',
             message: `Column ${col.name} has ${(nullRate * 100).toFixed(1)}% null values`,
             field: col.name,
-            table: this._name
+            table: this._name,
           });
         }
       }
@@ -143,7 +150,7 @@ export class LocalTable<T = Record<string, any>> {
     return {
       valid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -152,7 +159,7 @@ export class LocalTable<T = Record<string, any>> {
       name: this._name,
       data: this._data,
       metadata: this._metadata,
-      schema: this._schema
+      schema: this._schema,
     };
   }
 }

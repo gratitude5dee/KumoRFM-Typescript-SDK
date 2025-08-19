@@ -1,10 +1,10 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { z } from 'npm:zod@3.22.0';
 import { authenticateUser, checkRateLimit } from '../_shared/auth.ts';
-import { createResponse, createAPIError } from '../_shared/responses.ts';
+import { createAPIError, createResponse } from '../_shared/responses.ts';
 import { corsHeaders } from '../_shared/cors.ts';
-import { SerializedGraphSchema, PQLBuilderSpecSchema } from '../_shared/schemas.ts';
-import { deserializeGraph, createRFMClient, PQLBuilder } from '../_shared/sdk.ts';
+import { PQLBuilderSpecSchema, SerializedGraphSchema } from '../_shared/schemas.ts';
+import { createRFMClient, deserializeGraph, PQLBuilder } from '../_shared/sdk.ts';
 
 const RequestSchema = z.object({
   query: z.string().optional(),
@@ -15,8 +15,8 @@ const RequestSchema = z.object({
     timeout: z.number().positive().optional(),
   }).optional(),
 }).refine(
-  data => !!data.query || !!data.builder,
-  { message: 'Either query or builder must be provided' }
+  (data) => !!data.query || !!data.builder,
+  { message: 'Either query or builder must be provided' },
 );
 
 serve(async (req: Request) => {
@@ -33,7 +33,7 @@ serve(async (req: Request) => {
     return createResponse(
       undefined,
       createAPIError('RATE_LIMITED', 'Too many requests. Please try again later.'),
-      429
+      429,
     );
   }
 
@@ -51,7 +51,7 @@ serve(async (req: Request) => {
         builder.for(...validated.builder.for);
       }
       if (validated.builder.where?.length) {
-        validated.builder.where.forEach(w => builder.where(w));
+        validated.builder.where.forEach((w) => builder.where(w));
       }
       if (validated.builder.groupBy?.length) {
         builder.groupBy(...validated.builder.groupBy);
@@ -77,7 +77,7 @@ serve(async (req: Request) => {
       return createResponse(
         undefined,
         createAPIError('BAD_REQUEST', 'Invalid request', { errors: error.errors }),
-        400
+        400,
       );
     }
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -85,7 +85,7 @@ serve(async (req: Request) => {
     return createResponse(
       undefined,
       createAPIError(errorCode, errorMessage),
-      errorCode === 'VALIDATION_ERROR' ? 400 : 500
+      errorCode === 'VALIDATION_ERROR' ? 400 : 500,
     );
   }
 });

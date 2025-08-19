@@ -8,7 +8,16 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   prettier,
   {
-    ignores: ['dist', 'docs', 'supabase', 'node_modules'],
+    ignores: [
+      'dist',
+      'docs',
+      'supabase',
+      'node_modules',
+      'kumo-edge-client.ts',
+      'kumo-edge-functions.ts',
+      'kumo-rfm-tests.ts',
+      'kumo-rfm-typescript-sdk.ts',
+    ],
   },
   {
     files: ['**/*.ts', '**/*.tsx'],
@@ -22,7 +31,12 @@ export default tseslint.config(
     },
     rules: {
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-empty': 'off',
     },
-  }
+  },
 );

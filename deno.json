@@ -27,9 +27,11 @@
     }
   },
   "lint": {
-    "files": {
-      "include": ["supabase/functions/"],
-      "exclude": ["node_modules/", "dist/"]
+    "include": ["supabase/functions/"],
+    "exclude": ["node_modules/", "dist/"],
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["no-explicit-any", "require-await"]
     }
   }
 }

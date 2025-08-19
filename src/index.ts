@@ -11,12 +11,12 @@ export type {
   PredictionResult,
   AuthResult,
   RFMConfig,
-} from './core/types';
+} from './core/types.js';
 
-export * from './api/errors';
-export * from './utils/data';
-export * from './core/LocalTable';
-export * from './core/LocalGraph';
-export * from './query/builder';
-export * from './core/KumoRFM';
-export * from './api/client';
+export * from './api/errors.js';
+export * from './utils/data.js';
+export * from './core/LocalTable.js';
+export * from './core/LocalGraph.js';
+export * from './query/builder.js';
+export * from './core/KumoRFM.js';
+export * from './api/client.js';
