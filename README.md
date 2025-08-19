@@ -445,6 +445,73 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📋 Table of Contents
 
+## Shopify App Guide
+
+Build an embedded Shopify Admin app (Remix + Polaris + App Bridge) that uses the KumoRFM SDK to provide predictive insights.
+
+Architecture
+
+- Shopify Data Ingestion: Fetch Products, Customers, and Orders via Shopify Admin GraphQL, handle pagination and rate limits, and shape to users/items/orders.
+- KumoRFM Integration Layer: Build a LocalGraph using @kumo-ai/rfm-sdk and execute PQL queries via server-side Remix loaders/actions.
+- Admin Frontend: Embedded React app renders churn probability and top product recommendations.
+
+Phase 1: Project Scaffolding and Data Ingestion
+
+- Create app:
+  npm init @shopify/app@latest -- --template https://github.com/Shopify/shopify-app-template-remix
+- Access scopes in shopify.app.toml:
+  - read_products
+  - read_customers
+  - read_orders
+- Implement data fetching at app/lib/shopify-data.server.ts:
+  - Handle pageInfo.hasNextPage and endCursor for full pagination.
+  - Observe extensions.cost to avoid rate limits.
+  - Shape arrays:
+    - users: { id, firstName, lastName, email, createdAt }
+    - items: { id, title, handle, productType, vendor, createdAt }
+    - orders: { id, customer_id, item_id, price, date } one row per line item.
+
+Reference scaffold: shopify-app/app/lib/shopify-data.server.ts
+
+Phase 2: KumoRFM Integration and API Endpoints
+
+- Install the SDK: npm install @kumo-ai/rfm-sdk
+- Environment: Add KUMO_API_KEY to your .env and expose it to the Remix server.
+- Implement app/lib/kumorfm.server.ts with LocalTable -> LocalGraph linking and return new KumoRFM(graph, { apiKey: process.env.KUMO_API_KEY! }).
+- Create resource route app/routes/api.kumorfm.tsx (loader only):
+  - Authenticate admin, fetch data, build rfm, read PQL_QUERY_TYPE and CUSTOMER_ID from URL.
+  - product_recommendations:
+    PREDICT LIST_DISTINCT(orders.item_id, 0, 30, days) RANK TOP 5 FOR users.id='gid://shopify/Customer/CUSTOMER_ID'
+  - churn_prediction:
+    PREDICT COUNT(orders.\*, 0, 90, days)=0 FOR users.id='gid://shopify/Customer/CUSTOMER_ID'
+
+Reference scaffolds:
+
+- shopify-app/app/lib/kumorfm.server.ts
+- shopify-app/app/routes/api.kumorfm.tsx
+
+Phase 3: Shopify Admin Frontend (Remix + Polaris)
+
+- Customer page app/routes/app.customer.$id.tsx:
+  - Loader fetches Shopify customer.
+  - useEffect calls /api/kumorfm for churn_prediction and product_recommendations via App Bridge fetch.
+  - UI: Badge risk levels and ResourceList of top 5 recommendations with scores.
+- Dashboard app/routes/app.\_index.tsx:
+  - Button "Sync Data with KumoRFM" triggers an action to run fetchShopifyData asynchronously and optionally cache results.
+
+Verification and Checkpoints
+
+- Checkpoint 1: After Phase 1, print the { users, items, orders } shapes for review.
+- Checkpoint 2: After Phase 2, test /api/kumorfm with curl:
+  curl "https://your-app/api/kumorfm?PQL_QUERY_TYPE=churn_prediction&CUSTOMER_ID=gid://shopify/Customer/123"
+- Checkpoint 3: Before finishing, run npm run dev. Sync data, open a customer page, verify churn probability and recommendations.
+
+See full scaffold in shopify-app/.
+
+## Legacy and Migration Notes
+
+Legacy monolithic files are superseded by the organized src/ SDK and supabase/functions structure. They have been archived under legacy/ for reference and are excluded from builds and packaging.
+
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Setup & Installation](#setup--installation)
