@@ -4,11 +4,12 @@ import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
+  { ignores: ['node_modules/**', 'dist/**', 'docs/**', 'shopify-app/**', 'supabase/**'] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   prettier,
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
