@@ -14,15 +14,6 @@ A fully-typed, modern TypeScript SDK for KumoRFM - a foundation model for busine
 [![Coverage](https://img.shields.io/badge/coverage-90%25-green.svg)](https://github.com/yourusername/kumo-rfm-sdk)
 
 > Complete analytics engine example (SDK + Supabase Edge Functions + Shopify Admin app) is available at `examples/analytics-engine/`. See its guide at [examples/analytics-engine/README.md](examples/analytics-engine/README.md).
->
-> # KumoRFM TypeScript SDK
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg" />
-    <img alt="KumoRFM logo" src="docs/assets/logo-light.svg" width="220" />
-  </picture>
-</p>
 
 <p align="center"><strong>Predictive analytics for business data — type‑safe, isomorphic, and production‑ready.</strong></p>
 
@@ -53,10 +44,6 @@ A fully-typed, modern TypeScript SDK for KumoRFM - a foundation model for busine
   <a href="#supabase-bff">Supabase BFF</a> ·
   <a href="#development">Dev</a> ·
   <a href="#contributing">Contribute</a>
-</p>
-
-<p align="center">
-  <img src="docs/assets/demo.gif" alt="KumoRFM demo" width="860" />
 </p>
 
 KumoRFM is a foundation model for predictive analytics on business data. This monorepo contains:
@@ -813,7 +800,7 @@ npm run docs
 
 ## Contributing
 
-Contributions are welcome! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+Contributions are welcome! Please see the [Contributing](#contributing) section below for details.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
