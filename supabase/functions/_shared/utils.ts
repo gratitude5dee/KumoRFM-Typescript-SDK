@@ -4,7 +4,7 @@ import { APIError, ErrorCode } from './types.ts';
 export function createAPIError(
   code: ErrorCode,
   message: string,
-  details?: Record<string, any>
+  details?: Record<string, any>,
 ): APIError {
   return { code, message, details };
 }
@@ -12,7 +12,7 @@ export function createAPIError(
 export function createResponse<T>(
   data?: T,
   error?: APIError,
-  status: number = 200
+  status: number = 200,
 ): Response {
   const body = error ? { ok: false, error } : { ok: true, data };
   return new Response(JSON.stringify(body), {
@@ -22,21 +22,21 @@ export function createResponse<T>(
 }
 
 export async function authenticateUser(
-  req: Request
+  req: Request,
 ): Promise<{ supabase: SupabaseClient; userId: string } | Response> {
   const authorization = req.headers.get('Authorization');
   if (!authorization?.startsWith('Bearer ')) {
     return createResponse(
       undefined,
       createAPIError('UNAUTHORIZED', 'Missing or invalid authorization header'),
-      401
+      401,
     );
   }
 
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_ANON_KEY')!,
-    { global: { headers: { Authorization: authorization } } }
+    { global: { headers: { Authorization: authorization } } },
   );
 
   const { data: { user }, error } = await supabase.auth.getUser();
@@ -44,7 +44,7 @@ export async function authenticateUser(
     return createResponse(
       undefined,
       createAPIError('UNAUTHORIZED', 'Invalid token or user not found'),
-      401
+      401,
     );
   }
 
@@ -56,8 +56,8 @@ export function corsHeaders(origin?: string): HeadersInit {
   const allowOrigin = origin && allowedOrigins.includes('*')
     ? origin
     : allowedOrigins.includes(origin || '')
-      ? origin
-      : allowedOrigins[0];
+    ? origin
+    : allowedOrigins[0];
 
   return {
     'Access-Control-Allow-Origin': allowOrigin || '*',
@@ -70,7 +70,7 @@ export function corsHeaders(origin?: string): HeadersInit {
 export async function checkRateLimit(
   userId: string,
   limit: number = 100,
-  window: number = 60000
+  window: number = 60000,
 ): Promise<boolean> {
   const kv = await Deno.openKv();
   const key = ['rate_limit', userId, Math.floor(Date.now() / window)];

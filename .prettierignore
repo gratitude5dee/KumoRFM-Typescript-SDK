@@ -1,0 +1,10 @@
+dist
+docs
+node_modules
+supabase/
+
+kumo-edge-client.ts
+kumo-edge-functions.ts
+kumo-rfm-tests.ts
+kumo-rfm-typescript-sdk.ts
+kumo-rfm-config.json

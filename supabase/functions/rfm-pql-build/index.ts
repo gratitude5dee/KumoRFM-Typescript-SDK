@@ -1,7 +1,7 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { z } from 'npm:zod@3.22.0';
 import { authenticateUser } from '../_shared/auth.ts';
-import { createResponse, createAPIError } from '../_shared/responses.ts';
+import { createAPIError, createResponse } from '../_shared/responses.ts';
 import { corsHeaders } from '../_shared/cors.ts';
 import { PQLBuilderSpecSchema } from '../_shared/schemas.ts';
 import { PQLBuilder } from '../_shared/sdk.ts';
@@ -24,7 +24,7 @@ serve(async (req: Request) => {
       builder.for(...validated.for);
     }
     if (validated.where?.length) {
-      validated.where.forEach(w => builder.where(w));
+      validated.where.forEach((w) => builder.where(w));
     }
     if (validated.groupBy?.length) {
       builder.groupBy(...validated.groupBy);
@@ -43,13 +43,13 @@ serve(async (req: Request) => {
       return createResponse(
         undefined,
         createAPIError('BAD_REQUEST', 'Invalid builder specification', { errors: error.errors }),
-        400
+        400,
       );
     }
     return createResponse(
       undefined,
       createAPIError('INTERNAL', error instanceof Error ? error.message : 'Unknown error'),
-      500
+      500,
     );
   }
 });

@@ -35,7 +35,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -47,6 +47,7 @@
     "tsup": "^8.2.4",
     "vitest": "^2.1.1",
     "eslint": "^9.9.0",
+    "typescript-eslint": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "eslint-config-prettier": "^9.1.0",

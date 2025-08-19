@@ -1,6 +1,6 @@
-import { ValidationError } from '../api/errors';
-import { LocalTable } from './LocalTable';
-import { TableLink, ValidationResult, ValidationWarning } from './types';
+import { ValidationError } from '../api/errors.js';
+import { LocalTable } from './LocalTable.js';
+import { TableLink, ValidationResult, ValidationWarning, ColumnMetadata } from './types.js';
 
 export class LocalGraph {
   private _tables: Map<string, LocalTable>;
@@ -46,7 +46,7 @@ export class LocalGraph {
     }
 
     const existingLink = this._links.find(
-      l => l.srcTable === srcTable && l.fkey === fkey && l.dstTable === dstTable
+      (l) => l.srcTable === srcTable && l.fkey === fkey && l.dstTable === dstTable,
     );
     if (existingLink) {
       throw new ValidationError(`Link already exists: ${srcTable}.${fkey} -> ${dstTable}`);
@@ -58,7 +58,7 @@ export class LocalGraph {
 
   unlink(srcTable: string, fkey: string, dstTable: string): void {
     const index = this._links.findIndex(
-      l => l.srcTable === srcTable && l.fkey === fkey && l.dstTable === dstTable
+      (l) => l.srcTable === srcTable && l.fkey === fkey && l.dstTable === dstTable,
     );
     if (index === -1) {
       throw new ValidationError(`Link not found: ${srcTable}.${fkey} -> ${dstTable}`);
@@ -115,18 +115,18 @@ export class LocalGraph {
         errors.push({
           type: 'INVALID_LINK',
           message: `Destination table ${link.dstTable} has no primary key`,
-          table: link.dstTable
+          table: link.dstTable,
         });
       }
 
       if (srcTable.schema?.columns) {
-        const fkColumn = srcTable.schema.columns.find(c => c.name === link.fkey);
+        const fkColumn = srcTable.schema.columns.find((c: ColumnMetadata) => c.name === link.fkey);
         if (fkColumn?.nullable) {
           warnings.push({
             type: 'NULLABLE_FOREIGN_KEY',
             message: `Foreign key ${link.fkey} in table ${link.srcTable} is nullable`,
             field: link.fkey,
-            table: link.srcTable
+            table: link.srcTable,
           });
         }
       }
@@ -135,7 +135,7 @@ export class LocalGraph {
     if (this.hasCircularReference()) {
       errors.push({
         type: 'CIRCULAR_REFERENCE',
-        message: 'Graph contains circular references'
+        message: 'Graph contains circular references',
       });
     }
 
@@ -150,7 +150,7 @@ export class LocalGraph {
     const dfs = (table: string): boolean => {
       visited.add(table);
       recursionStack.add(table);
-      const outgoingLinks = this._links.filter(l => l.srcTable === table);
+      const outgoingLinks = this._links.filter((l) => l.srcTable === table);
       for (const link of outgoingLinks) {
         if (!visited.has(link.dstTable)) {
           if (dfs(link.dstTable)) return true;
@@ -196,7 +196,7 @@ export class LocalGraph {
     let viz = '\n=== Graph Visualization ===\n\n';
     for (const table of this._tables.values()) {
       viz += `[${table.name}]\n`;
-      const outgoing = this._links.filter(l => l.srcTable === table.name);
+      const outgoing = this._links.filter((l) => l.srcTable === table.name);
       for (const link of outgoing) {
         viz += `  └─(${link.fkey})──> [${link.dstTable}]\n`;
       }
@@ -208,15 +208,12 @@ export class LocalGraph {
 
   toJSON(): any {
     return {
-      tables: Array.from(this._tables.values()).map(t => t.toJSON()),
-      links: this._links
+      tables: Array.from(this._tables.values()).map((t) => t.toJSON()),
+      links: this._links,
     };
   }
 
-  static from_data(
-    dataDict: Record<string, any[]>,
-    inferMetadata: boolean = true
-  ): LocalGraph {
+  static from_data(dataDict: Record<string, any[]>, inferMetadata: boolean = true): LocalGraph {
     const tables: LocalTable[] = [];
     for (const [name, data] of Object.entries(dataDict)) {
       const table = new LocalTable(data, name);

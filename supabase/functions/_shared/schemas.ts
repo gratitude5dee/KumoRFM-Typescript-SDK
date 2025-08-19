@@ -1,7 +1,7 @@
 export {
-  TableMetadataSchema,
-  TableLinkSchema,
-  SerializedTableSchema,
+  PQLBuilderSpecSchema,
   SerializedGraphSchema,
-  PQLBuilderSpecSchema
+  SerializedTableSchema,
+  TableLinkSchema,
+  TableMetadataSchema,
 } from './types.ts';

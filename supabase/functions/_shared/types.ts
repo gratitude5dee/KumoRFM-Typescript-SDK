@@ -1,5 +1,5 @@
 import { z } from 'npm:zod@3.22.0';
-import type { TableMetadata, TableLink } from '../../../src/core/types.ts';
+import type { TableLink, TableMetadata } from '../../../src/core/types.ts';
 
 export interface SerializedTable {
   name: string;

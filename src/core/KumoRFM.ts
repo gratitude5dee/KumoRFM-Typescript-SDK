@@ -1,6 +1,6 @@
-import { LocalGraph } from './LocalGraph';
-import { PredictionResult, RFMConfig } from './types';
-import { PQLBuilder } from '../query/builder';
+import { LocalGraph } from './LocalGraph.js';
+import { PredictionResult, RFMConfig } from './types.js';
+import { PQLBuilder } from '../query/builder.js';
 
 export class KumoRFM {
   private graph: LocalGraph;
@@ -12,7 +12,10 @@ export class KumoRFM {
     this.config = config;
   }
 
-  async predict(query: string, options?: { useCache?: boolean; timeout?: number }): Promise<PredictionResult> {
+  async predict(
+    query: string,
+    options?: { useCache?: boolean; timeout?: number },
+  ): Promise<PredictionResult> {
     const key = `${query}`;
     if (options?.useCache && this.cache.has(key)) {
       return this.cache.get(key)!;
@@ -23,8 +26,8 @@ export class KumoRFM {
       predictions: [],
       metadata: {
         executionTime: Date.now() - start,
-        rowCount: 0
-      }
+        rowCount: 0,
+      },
     };
     if (options?.useCache) {
       this.cache.set(key, result);
@@ -32,7 +35,10 @@ export class KumoRFM {
     return result;
   }
 
-  async batchPredict(queries: string[], _opts?: { concurrency?: number; useCache?: boolean }): Promise<PredictionResult[]> {
+  async batchPredict(
+    queries: string[],
+    _opts?: { concurrency?: number; useCache?: boolean },
+  ): Promise<PredictionResult[]> {
     const results: PredictionResult[] = [];
     for (const q of queries) {
       results.push(await this.predict(q, _opts));
@@ -52,5 +58,3 @@ export class KumoRFM {
     this.graph = graph;
   }
 }
-
-export { PQLBuilder };

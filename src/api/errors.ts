@@ -2,7 +2,7 @@ export class RFMError extends Error {
   constructor(
     message: string,
     public code: string,
-    public details?: Record<string, any>
+    public details?: Record<string, any>,
   ) {
     super(message);
     this.name = 'RFMError';
@@ -20,7 +20,7 @@ export class APIError extends RFMError {
   constructor(
     message: string,
     public statusCode?: number,
-    details?: Record<string, any>
+    details?: Record<string, any>,
   ) {
     super(message, 'API_ERROR', details);
     this.name = 'APIError';

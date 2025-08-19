@@ -39,12 +39,12 @@ init('your-api-key');
 // Load your data
 const usersData = [
   { user_id: 1, name: 'Alice', signup_date: '2024-01-01' },
-  { user_id: 2, name: 'Bob', signup_date: '2024-01-02' }
+  { user_id: 2, name: 'Bob', signup_date: '2024-01-02' },
 ];
 
 const ordersData = [
   { order_id: 1, user_id: 1, amount: 99.99, created_at: '2024-02-01' },
-  { order_id: 2, user_id: 2, amount: 149.99, created_at: '2024-02-15' }
+  { order_id: 2, user_id: 2, amount: 149.99, created_at: '2024-02-15' },
 ];
 
 // Create tables with automatic metadata inference
@@ -123,7 +123,7 @@ The main prediction model class.
 const model = new KumoRFM(graph, {
   apiKey: 'your-api-key',
   baseUrl: 'https://api.kumorfm.ai',
-  timeout: 30000
+  timeout: 30000,
 });
 
 // Single prediction
@@ -132,7 +132,7 @@ const result = await model.predict(query);
 // Batch predictions
 const results = await model.batchPredict(queries, {
   concurrency: 5,
-  useCache: true
+  useCache: true,
 });
 ```
 
@@ -142,12 +142,12 @@ Type-safe query construction for predictions.
 
 ```typescript
 const query = new PQLBuilder()
-  .predict('COUNT(orders.order_id)')      // Prediction target
-  .for('user_id')                         // Entity to predict for
-  .where('orders.status = "completed"')   // Conditions
-  .groupBy('category')                    // Grouping
-  .orderBy('count DESC')                   // Sorting
-  .limit(10)                              // Limit results
+  .predict('COUNT(orders.order_id)') // Prediction target
+  .for('user_id') // Entity to predict for
+  .where('orders.status = "completed"') // Conditions
+  .groupBy('category') // Grouping
+  .orderBy('count DESC') // Sorting
+  .limit(10) // Limit results
   .build();
 ```
 
@@ -210,18 +210,14 @@ const fraudScores = await model.predict(fraudQuery);
 import { DataFrameUtils } from 'kumo-rfm-sdk';
 
 // Aggregate data
-const aggregated = DataFrameUtils.aggregate(
-  data,
-  'user_id',
-  {
-    total_spend: items => items.reduce((sum, item) => sum + item.amount, 0),
-    order_count: items => items.length,
-    avg_order_value: items => {
-      const sum = items.reduce((s, item) => s + item.amount, 0);
-      return sum / items.length;
-    }
-  }
-);
+const aggregated = DataFrameUtils.aggregate(data, 'user_id', {
+  total_spend: (items) => items.reduce((sum, item) => sum + item.amount, 0),
+  order_count: (items) => items.length,
+  avg_order_value: (items) => {
+    const sum = items.reduce((s, item) => s + item.amount, 0);
+    return sum / items.length;
+  },
+});
 
 // Group data
 const grouped = DataFrameUtils.groupBy(data, 'category');
@@ -270,8 +266,8 @@ const config: RFMConfig = {
   timeout: 30000,
   maxRetries: 3,
   headers: {
-    'X-Custom-Header': 'value'
-  }
+    'X-Custom-Header': 'value',
+  },
 };
 
 const model = new KumoRFM(graph, config);
@@ -371,14 +367,15 @@ model.clearCache();
 ```typescript
 // Process multiple queries efficiently
 const results = await model.batchPredict(queries, {
-  concurrency: 5,  // Process 5 queries in parallel
-  useCache: true    // Cache individual results
+  concurrency: 5, // Process 5 queries in parallel
+  useCache: true, // Cache individual results
 });
 ```
 
 ### Large Datasets
 
 For large datasets, consider:
+
 - Chunking data into smaller batches
 - Using streaming where available
 - Implementing pagination for results
@@ -559,6 +556,7 @@ Authorization: Bearer <jwt-token>
 Initialize or refresh the RFM client configuration.
 
 **Request:**
+
 ```json
 {
   "config": {
@@ -570,6 +568,7 @@ Initialize or refresh the RFM client configuration.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -584,6 +583,7 @@ Initialize or refresh the RFM client configuration.
 Validate a graph structure before predictions.
 
 **Request:**
+
 ```json
 {
   "graph": {
@@ -606,6 +606,7 @@ Validate a graph structure before predictions.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -622,16 +623,15 @@ Validate a graph structure before predictions.
 Build a graph from inline data or Supabase tables.
 
 **Request (inline data):**
+
 ```json
 {
   "data": {
     "users": [
-      {"user_id": 1, "name": "Alice"},
-      {"user_id": 2, "name": "Bob"}
+      { "user_id": 1, "name": "Alice" },
+      { "user_id": 2, "name": "Bob" }
     ],
-    "orders": [
-      {"order_id": 1, "user_id": 1, "amount": 99.99}
-    ]
+    "orders": [{ "order_id": 1, "user_id": 1, "amount": 99.99 }]
   },
   "inferMetadata": true,
   "inferLinks": true
@@ -639,6 +639,7 @@ Build a graph from inline data or Supabase tables.
 ```
 
 **Request (from database):**
+
 ```json
 {
   "sources": {
@@ -651,6 +652,7 @@ Build a graph from inline data or Supabase tables.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -672,6 +674,7 @@ Build a graph from inline data or Supabase tables.
 Execute a prediction query.
 
 **Request:**
+
 ```json
 {
   "query": "PREDICT COUNT(orders.order_id) FOR user_id",
@@ -684,6 +687,7 @@ Execute a prediction query.
 ```
 
 **Request (with builder):**
+
 ```json
 {
   "builder": {
@@ -699,14 +703,15 @@ Execute a prediction query.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
   "data": {
     "query": "...",
     "predictions": [
-      {"user_id": 1, "prediction": 2.5},
-      {"user_id": 2, "prediction": 1.8}
+      { "user_id": 1, "prediction": 2.5 },
+      { "user_id": 2, "prediction": 1.8 }
     ],
     "metadata": {
       "executionTime": 1234,
@@ -722,6 +727,7 @@ Execute a prediction query.
 Build a PQL query from a typed specification.
 
 **Request:**
+
 ```json
 {
   "predict": "COUNT(orders.order_id)",
@@ -734,6 +740,7 @@ Build a PQL query from a typed specification.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -748,6 +755,7 @@ Build a PQL query from a typed specification.
 Stream prediction progress via Server-Sent Events.
 
 **Request:**
+
 ```http
 GET /rfm-predict-stream?query=PREDICT...&graph={...}
 Accept: text/event-stream
@@ -755,6 +763,7 @@ Authorization: Bearer <jwt>
 ```
 
 **Response (SSE stream):**
+
 ```
 event: message
 data: {"status": "starting"}
@@ -777,6 +786,7 @@ data: {"stats": {"rowCount": 100, "executionTime": 1234}}
 Health check endpoint (no authentication required).
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -802,15 +812,15 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Authenticate
 await supabase.auth.signInWithPassword({
   email: 'user@example.com',
-  password: 'password'
+  password: 'password',
 });
 
 // Make prediction
 const { data, error } = await supabase.functions.invoke('rfm-predict', {
   body: {
     query: 'PREDICT COUNT(orders.order_id) FOR user_id',
-    graph: myGraph
-  }
+    graph: myGraph,
+  },
 });
 ```
 
@@ -822,13 +832,13 @@ import { useKumoRFM } from './hooks/useKumoRFM';
 function MyComponent() {
   const { predict, buildGraph, loading, error } = useKumoRFM({
     supabaseUrl: process.env.REACT_APP_SUPABASE_URL,
-    supabaseAnonKey: process.env.REACT_APP_SUPABASE_ANON_KEY
+    supabaseAnonKey: process.env.REACT_APP_SUPABASE_ANON_KEY,
   });
 
   const handlePredict = async () => {
     const result = await predict({
       query: 'PREDICT ...',
-      graph: myGraph
+      graph: myGraph,
     });
     console.log(result);
   };
@@ -872,6 +882,7 @@ curl -X POST \
 ### Rate Limiting
 
 Built-in rate limiting using Deno KV:
+
 - Default: 100 requests per minute per user
 - Configurable via environment variables
 - Returns 429 status when exceeded
@@ -879,6 +890,7 @@ Built-in rate limiting using Deno KV:
 ### CORS
 
 Configurable CORS origins via `CORS_ORIGINS` environment variable:
+
 - Supports multiple origins (comma-separated)
 - Wildcard `*` support for development
 - Proper preflight handling
@@ -886,6 +898,7 @@ Configurable CORS origins via `CORS_ORIGINS` environment variable:
 ### Input Validation
 
 All inputs validated with Zod schemas:
+
 - Type checking at runtime
 - Clear error messages
 - Protection against injection attacks
@@ -907,12 +920,12 @@ All inputs validated with Zod schemas:
 
 ### Benchmarks
 
-| Operation | Average Time | Max Throughput |
-|-----------|-------------|----------------|
-| Graph Build | ~500ms | 200 req/s |
-| Validation | ~50ms | 2000 req/s |
-| Prediction | ~2000ms | 50 req/s |
-| PQL Build | ~10ms | 10000 req/s |
+| Operation   | Average Time | Max Throughput |
+| ----------- | ------------ | -------------- |
+| Graph Build | ~500ms       | 200 req/s      |
+| Validation  | ~50ms        | 2000 req/s     |
+| Prediction  | ~2000ms      | 50 req/s       |
+| PQL Build   | ~10ms        | 10000 req/s    |
 
 ## Deployment
 
@@ -929,6 +942,7 @@ All inputs validated with Zod schemas:
 ### Monitoring
 
 Monitor your functions via Supabase Dashboard:
+
 - Function invocations
 - Error rates
 - Response times
@@ -937,6 +951,7 @@ Monitor your functions via Supabase Dashboard:
 ### Scaling
 
 Edge Functions automatically scale based on load:
+
 - Concurrent execution: Up to 1000
 - Memory: 256MB per function
 - Timeout: 60 seconds max
@@ -974,17 +989,17 @@ deno test --coverage=coverage/ tests/
 Deno.test('End-to-end prediction flow', async () => {
   // 1. Build graph
   const graph = await buildGraph(testData);
-  
+
   // 2. Validate
   const validation = await validateGraph(graph);
   assert(validation.valid);
-  
+
   // 3. Predict
   const result = await predict({
     query: 'PREDICT ...',
-    graph
+    graph,
   });
-  
+
   assert(result.predictions.length > 0);
 });
 ```
@@ -994,21 +1009,25 @@ Deno.test('End-to-end prediction flow', async () => {
 ### Common Issues
 
 #### 401 Unauthorized
+
 - Check JWT token is valid
 - Ensure user is authenticated
 - Verify Supabase URL and anon key
 
 #### 400 Bad Request
+
 - Validate request payload matches schema
 - Check graph structure is valid
 - Ensure PQL syntax is correct
 
 #### 500 Internal Error
+
 - Check KUMO_API_KEY is set
 - Verify network connectivity
 - Check function logs for details
 
 #### 429 Rate Limited
+
 - Implement exponential backoff
 - Consider batching requests
 - Increase rate limits if needed
@@ -1016,6 +1035,7 @@ Deno.test('End-to-end prediction flow', async () => {
 ### Debug Mode
 
 Enable debug logging:
+
 ```typescript
 // In function code
 if (Deno.env.get('DEBUG') === 'true') {

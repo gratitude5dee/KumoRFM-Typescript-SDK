@@ -35,7 +35,12 @@ export interface TableSchema {
 }
 
 export interface ValidationError {
-  type: 'MISSING_PRIMARY_KEY' | 'INVALID_LINK' | 'TYPE_MISMATCH' | 'DUPLICATE_LINK' | 'CIRCULAR_REFERENCE';
+  type:
+    | 'MISSING_PRIMARY_KEY'
+    | 'INVALID_LINK'
+    | 'TYPE_MISMATCH'
+    | 'DUPLICATE_LINK'
+    | 'CIRCULAR_REFERENCE';
   message: string;
   field?: string;
   table?: string;

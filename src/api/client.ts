@@ -1,5 +1,5 @@
-import { APIError } from './errors';
-import { RFMConfig } from '../core/types';
+import { APIError } from './errors.js';
+import { RFMConfig } from '../core/types.js';
 
 export class RFMApiClient {
   private config: RFMConfig;
@@ -10,7 +10,7 @@ export class RFMApiClient {
     this.config = {
       baseUrl: 'https://api.kumorfm.ai',
       timeout: 30000,
-      ...config
+      ...config,
     };
   }
 
@@ -30,7 +30,7 @@ export class RFMApiClient {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(this.config.headers || {}),
-      Authorization: `Bearer ${this.authToken}`
+      Authorization: `Bearer ${this.authToken}`,
     };
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.config.timeout);
@@ -39,7 +39,7 @@ export class RFMApiClient {
       response = await fetch(`${this.config.baseUrl}${path}`, {
         ...init,
         headers,
-        signal: controller.signal
+        signal: controller.signal,
       });
     } finally {
       clearTimeout(timeout);

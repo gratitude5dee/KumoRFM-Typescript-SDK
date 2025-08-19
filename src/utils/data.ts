@@ -1,13 +1,13 @@
-import { ColumnMetadata, DataType } from '../core/types';
+import { ColumnMetadata, DataType } from '../core/types.js';
 
 export class DataFrameUtils {
   static inferColumnType(values: any[]): DataType {
-    const nonNullValues = values.filter(v => v != null);
+    const nonNullValues = values.filter((v) => v != null);
     if (nonNullValues.length === 0) return 'text';
-    if (nonNullValues.every(v => v instanceof Date || !isNaN(Date.parse(v)))) {
+    if (nonNullValues.every((v) => v instanceof Date || !isNaN(Date.parse(v)))) {
       return 'time_column';
     }
-    if (nonNullValues.every(v => typeof v === 'number' || !isNaN(Number(v)))) {
+    if (nonNullValues.every((v) => typeof v === 'number' || !isNaN(Number(v)))) {
       return 'numerical';
     }
     const uniqueValues = new Set(nonNullValues);
@@ -18,7 +18,7 @@ export class DataFrameUtils {
   }
 
   static analyzeColumn(data: any[], columnName: string): ColumnMetadata {
-    const nonNullValues = data.filter(v => v != null);
+    const nonNullValues = data.filter((v) => v != null);
     const uniqueValues = new Set(nonNullValues);
     return {
       name: columnName,
@@ -46,7 +46,7 @@ export class DataFrameUtils {
   static aggregate<T>(
     data: T[],
     groupBy: keyof T,
-    aggregations: Record<string, (items: T[]) => any>
+    aggregations: Record<string, (items: T[]) => any>,
   ): Record<string, any>[] {
     const grouped = this.groupBy(data, groupBy);
     const results: Record<string, any>[] = [];

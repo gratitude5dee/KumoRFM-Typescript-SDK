@@ -1,4 +1,4 @@
-import { ValidationError } from '../api/errors';
+import { ValidationError } from '../api/errors.js';
 
 export class PQLBuilder {
   private predictTarget?: string;
