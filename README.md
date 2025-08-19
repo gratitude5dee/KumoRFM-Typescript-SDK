@@ -189,12 +189,12 @@ A secure HTTP layer over the SDK using Deno‑based **Supabase Edge Functions**.
 
 ```mermaid
 graph TD;
-  A[Client App<br/>(Browser/Mobile)] -->|HTTPS Request| B[Supabase Edge Functions];
-  B -->|Authenticated Request| C[KumoRFM API];
+  A["Client App (Browser/Mobile)"] -->|HTTPS Request| B["Supabase Edge Functions"];
+  B -->|Authenticated Request| C["KumoRFM API"];
   C -->|Prediction| B;
   B -->|JSON Response| A;
-  D[Supabase Auth] <-->|JWT| B;
-  E[Supabase Database] <-->|Optional Data Source| B;
+  D["Supabase Auth"] <-->|JWT| B;
+  E["Supabase Database"] <-->|Optional Data Source| B;
 ```
 
 ### Endpoints
