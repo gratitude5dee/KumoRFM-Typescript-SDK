@@ -10,8 +10,12 @@ export default function Index() {
   return (
     <Page title="Analytics Dashboard">
       <Card>
-        <Button onClick={() => fetcher.submit({}, { method: 'post' })}>Sync Data with KumoRFM</Button>
-        <Text as="p" variant="bodyMd">Sync job will run in background.</Text>
+        <Button onClick={() => fetcher.submit({}, { method: 'post' })}>
+          Sync Data with KumoRFM
+        </Button>
+        <Text as="p" variant="bodyMd">
+          Sync job will run in background.
+        </Text>
       </Card>
     </Page>
   );

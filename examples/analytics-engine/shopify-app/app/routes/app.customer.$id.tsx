@@ -14,21 +14,29 @@ export default function CustomerInsights() {
     fetch(`/api/kumorfm?PQL_QUERY_TYPE=churn_prediction&CUSTOMER_ID=${encodeURIComponent(id)}`)
       .then((r) => r.json())
       .then(setChurn);
-    fetch(`/api/kumorfm?PQL_QUERY_TYPE=product_recommendations&CUSTOMER_ID=${encodeURIComponent(id)}`)
+    fetch(
+      `/api/kumorfm?PQL_QUERY_TYPE=product_recommendations&CUSTOMER_ID=${encodeURIComponent(id)}`,
+    )
       .then((r) => r.json())
       .then((d) => setRecs(d?.result ?? []));
   }, []);
   return (
     <Page title="Customer Insights">
       <Card>
-        <Text as="h2" variant="headingMd">Churn Prediction</Text>
+        <Text as="h2" variant="headingMd">
+          Churn Prediction
+        </Text>
         <Badge status="warning">{churn ? 'Risk' : 'Unknown'}</Badge>
       </Card>
       <Card>
-        <Text as="h2" variant="headingMd">Recommendations</Text>
+        <Text as="h2" variant="headingMd">
+          Recommendations
+        </Text>
         <ResourceList
           items={recs}
-          renderItem={(item) => <ResourceList.Item id={String(item)}>{String(item)}</ResourceList.Item>}
+          renderItem={(item) => (
+            <ResourceList.Item id={String(item)}>{String(item)}</ResourceList.Item>
+          )}
         />
       </Card>
     </Page>

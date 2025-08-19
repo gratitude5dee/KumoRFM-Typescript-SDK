@@ -1,8 +1,16 @@
 import { KumoRFM, LocalGraph, LocalTable } from '../../../../../src/index.js';
 
-interface User { id: string }
-interface Item { id: string }
-interface Order { id: string; customer_id: string; item_id: string }
+interface User {
+  id: string;
+}
+interface Item {
+  id: string;
+}
+interface Order {
+  id: string;
+  customer_id: string;
+  item_id: string;
+}
 
 export async function getKumoRfmForShop(users: User[], items: Item[], orders: Order[]) {
   const usersTable = new LocalTable(users, 'users').inferMetadata();

@@ -18,7 +18,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     query = `PREDICT COUNT(orders.*, 0, 90, days)=0 FOR users.id='${customerId}'`;
   }
 
-  if (!query) return json({ error: 'Missing or invalid PQL_QUERY_TYPE or CUSTOMER_ID' }, { status: 400 });
+  if (!query)
+    return json({ error: 'Missing or invalid PQL_QUERY_TYPE or CUSTOMER_ID' }, { status: 400 });
   const result = await rfm.predict(query);
   return json(result);
 }
