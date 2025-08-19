@@ -2,11 +2,11 @@ name: Example Analytics Engine CI
 
 on:
   push:
-    branches: ["devin/**", "main"]
+    branches: ['devin/**', 'main']
   pull_request:
-    branches: ["main"]
+    branches: ['main']
     paths:
-      - "examples/analytics-engine/**"
+      - 'examples/analytics-engine/**'
 
 jobs:
   example-ci:
