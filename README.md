@@ -8,6 +8,384 @@ A fully-typed, modern TypeScript SDK for KumoRFM - a foundation model for busine
 [![Coverage](https://img.shields.io/badge/coverage-90%25-green.svg)](https://github.com/yourusername/kumo-rfm-sdk)
 
 > Complete analytics engine example (SDK + Supabase Edge Functions + Shopify Admin app) is available at `examples/analytics-engine/`. See its guide at [examples/analytics-engine/README.md](examples/analytics-engine/README.md).
+>
+> # KumoRFM TypeScript SDK
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg" />
+    <img alt="KumoRFM logo" src="docs/assets/logo-light.svg" width="220" />
+  </picture>
+</p>
+
+<p align="center"><strong>Predictive analytics for business data — type‑safe, isomorphic, and production‑ready.</strong></p>
+
+<p align="center">
+  <a href="https://github.com/gratitude5dee/KumoRFM-Typescript-SDK/actions/workflows/ci.yml">
+    <img alt="CI" src="https://github.com/gratitude5dee/KumoRFM-Typescript-SDK/actions/workflows/ci.yml/badge.svg" />
+  </a>
+  <a href="https://www.npmjs.com/package/@kumo-ai/rfm-sdk">
+    <img alt="npm" src="https://img.shields.io/npm/v/%40kumo-ai%2Frfm-sdk.svg" />
+  </a>
+  <a href="https://www.npmjs.com/package/@kumo-ai/rfm-sdk">
+    <img alt="npm downloads" src="https://img.shields.io/npm/dw/%40kumo-ai%2Frfm-sdk?label=npm%20downloads" />
+  </a>
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.x-blue.svg" />
+  <img alt="types included" src="https://img.shields.io/badge/types-included-informational" />
+  <a href="https://bundlephobia.com/package/@kumo-ai/rfm-sdk">
+    <img alt="bundle size" src="https://img.shields.io/bundlephobia/minzip/%40kumo-ai%2Frfm-sdk?label=minzip" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
+  </a>
+  <img alt="semantic-release" src="https://img.shields.io/badge/semver-semantic--release-e10079?logo=semantic-release" />
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#full-stack-example">Demo App</a> ·
+  <a href="#supabase-bff">Supabase BFF</a> ·
+  <a href="#development">Dev</a> ·
+  <a href="#contributing">Contribute</a>
+</p>
+
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="KumoRFM demo" width="860" />
+</p>
+
+KumoRFM is a foundation model for predictive analytics on business data. This monorepo contains:
+
+* **Core TypeScript SDK** `(@kumo-ai/rfm-sdk)` — fully typed, works in Node, Deno, Bun, and browsers.
+* **Supabase Backend‑for‑Frontend (BFF)** — secure Edge Functions that wrap the SDK and protect your API key.
+* **Full‑stack Shopify example** — a Remix + Polaris app demonstrating churn prediction and product recommendations.
+
+> \[!IMPORTANT]
+> Never expose your KumoRFM API key to the browser. Use the provided Supabase Edge Functions to keep secrets server‑side.
+
+---
+
+## Table of Contents
+
+1. [Features](#features)
+2. [Monorepo Structure](#monorepo-structure)
+3. [Installation](#installation)
+4. [Quick Start](#quick-start)
+5. [Core Concepts](#core-concepts)
+6. [Supabase BFF](#supabase-bff)
+
+   * [Architecture](#architecture)
+   * [Endpoints](#endpoints)
+   * [Setup & Deployment](#setup--deployment)
+   * [Streaming](#streaming)
+7. [Full‑Stack Example](#full-stack-example)
+8. [Development](#development)
+9. [Contributing](#contributing)
+10. [License](#license)
+
+---
+
+## Features
+
+* ⚡️ **Isomorphic** — runs in Node.js, Deno, Bun, and the browser.
+* 🔒 **Type‑safe** — rich TypeScript types and autocompletion.
+* 🔧 **Smart data handling** — automatic metadata and relationship inference.
+* 🧠 **PQL Builder** — fluent, safe construction of Predictive Query Language (PQL).
+* ✅ **Schema validation** — built‑in checks for tables and graphs.
+* 🔁 **Python parity** — tracking toward full parity with the official Python SDK.
+
+## Monorepo Structure
+
+```text
+.
+├── src/                        # Core SDK source (TypeScript)
+├── dist/                       # Built artifacts (CJS, ESM, .d.ts)
+├── supabase/
+│   └── functions/              # Edge Functions (Deno)
+│       ├── rfm-init
+│       ├── rfm-predict
+│       ├── rfm-predict-stream
+│       ├── rfm-graph-build
+│       ├── rfm-graph-validate
+│       ├── rfm-pql-build
+│       └── rfm-health
+└── examples/
+    └── analytics-engine/       # Shopify + Remix + Polaris example app
+```
+
+---
+
+## Installation
+
+```bash
+npm install @kumo-ai/rfm-sdk
+# or
+yarn add @kumo-ai/rfm-sdk
+# or
+pnpm add @kumo-ai/rfm-sdk
+```
+
+> \[!NOTE]
+> Requires Node.js **v18+** (or Deno/Bun). TypeScript **5.x** recommended.
+
+---
+
+## Quick Start
+
+Define tables, link them into a graph, and run a predictive query.
+
+```ts
+import { LocalTable, LocalGraph, KumoRFM, PQLBuilder } from '@kumo-ai/rfm-sdk';
+
+// 1) Initialize the model with your API key (keep secrets server‑side!)
+const apiKey = process.env.KUMO_API_KEY!;
+
+// 2) Load your data
+const usersData = [
+  { user_id: 1, name: 'Alice', signup_date: '2024-01-01' },
+  { user_id: 2, name: 'Bob',   signup_date: '2024-01-02' },
+];
+
+const ordersData = [
+  { order_id: 1, user_id: 1, amount:  99.99, created_at: '2024-02-01' },
+  { order_id: 2, user_id: 2, amount: 149.99, created_at: '2024-02-15' },
+];
+
+// 3) Create tables with automatic metadata inference
+const users  = new LocalTable(usersData,  'users').inferMetadata();
+const orders = new LocalTable(ordersData, 'orders').inferMetadata();
+
+// 4) Build a graph and link relationships
+const graph = new LocalGraph([users, orders]);
+graph.link('orders', 'user_id', 'users'); // orders.user_id → users
+
+// 5) Initialize the model
+const model = new KumoRFM(graph, { apiKey });
+
+// 6) Build and run a predictive query with PQL
+const query = new PQLBuilder()
+  .predict('SUM(orders.amount)')
+  .for('user_id')
+  .where('orders.created_at > "2024-01-01"')
+  .build();
+
+const results = await model.predict(query);
+console.log('Predictions:', results.predictions);
+```
+
+For more examples, see `examples/quickstart.ts` and `examples/predict-churn.ts`.
+
+---
+
+## Core Concepts
+
+* **LocalTable** — a dataset (e.g., `users`, `orders`) with metadata. Use `.inferMetadata()` to detect column types, primary keys, and time columns.
+* **LocalGraph** — a collection of `LocalTable` instances and their relationships. Use `.link()` or `.inferLinks()`.
+* **KumoRFM** — main class to run predictions against a `LocalGraph`.
+* **PQLBuilder** — fluent, type‑aware builder for PQL query strings.
+
+> \[!TIP]
+> Keep time columns normalized (e.g., ISO 8601 strings) for best inference and performance.
+
+---
+
+## Supabase BFF
+
+A secure HTTP layer over the SDK using Deno‑based **Supabase Edge Functions**. Recommended for browser apps.
+
+### Architecture
+
+```mermaid
+graph TD
+  A[Client App\n(Browser/Mobile)] -->|HTTPS Request| B(Supabase Edge Functions)
+  B -->|Authenticated Request| C(KumoRFM API)
+  C -->|Prediction| B
+  B -->|JSON Response| A
+  D[Supabase Auth] <-->|JWT| B
+  E[Supabase Database] <-->|Optional Data Source| B
+```
+
+### Endpoints
+
+> All endpoints are prefixed with `/functions/v1/`. Except `/rfm-health`, each requires `Authorization: Bearer <SUPABASE_JWT>`.
+
+| Endpoint              | Method | Description                                                |
+| --------------------- | :----: | ---------------------------------------------------------- |
+| `/rfm-health`         |   GET  | Health check (no auth).                                    |
+| `/rfm-init`           |  POST  | Initialize the KumoRFM client on the server.               |
+| `/rfm-graph-build`    |  POST  | Build a graph from inline data or Supabase tables.         |
+| `/rfm-graph-validate` |  POST  | Validate a graph structure.                                |
+| `/rfm-pql-build`      |  POST  | Construct a PQL string from a JSON spec.                   |
+| `/rfm-predict`        |  POST  | Execute a predictive query against a provided graph.       |
+| `/rfm-predict-stream` |  POST  | Execute a predictive query and stream results via **SSE**. |
+
+#### Example Request (cURL)
+
+```bash
+# Replace with your project URL and a valid JWT
+export SUPABASE_URL="https://<your-project-ref>.supabase.co"
+export SUPABASE_JWT="..."
+
+curl -X POST "$SUPABASE_URL/functions/v1/rfm-predict" \
+  -H "Authorization: Bearer $SUPABASE_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "PREDICT COUNT(orders.order_id) FOR user_id",
+    "graph": {
+      "tables": [
+        { "name": "users",  "data": [{ "user_id": 1 }] },
+        { "name": "orders", "data": [{ "order_id": 1, "user_id": 1 }] }
+      ],
+      "links": [
+        { "srcTable": "orders", "fkey": "user_id", "dstTable": "users" }
+      ]
+    }
+  }'
+```
+
+### Setup & Deployment
+
+**Prerequisites**
+
+* Supabase account + **Supabase CLI**
+* **Deno** installed
+
+**Initialize & Link**
+
+```bash
+supabase init
+supabase link --project-ref YOUR_PROJECT_REF
+```
+
+**Set Secrets** (API key + CORS origins)
+
+```bash
+supabase secrets set \
+  KUMO_API_KEY="sk_kumo_your_api_key" \
+  CORS_ORIGINS="http://localhost:3000,https://your-app.com"
+```
+
+**Deploy Functions**
+
+```bash
+supabase functions deploy rfm-predict \
+  && supabase functions deploy rfm-graph-build \
+  && supabase functions deploy rfm-graph-validate \
+  && supabase functions deploy rfm-pql-build \
+  && supabase functions deploy rfm-predict-stream \
+  && supabase functions deploy rfm-health \
+  && supabase functions deploy rfm-init
+```
+
+### Streaming
+
+`/rfm-predict-stream` uses **Server‑Sent Events (SSE)** to deliver long‑running predictions progressively.
+
+> \[!WARNING]
+> SSE connections are long‑lived. Ensure your reverse proxy and platform timeouts are configured accordingly.
+
+---
+
+## Full‑Stack Example
+
+A complete Shopify Embedded App built with **Remix** and **Polaris** that:
+
+* Shapes data from the Shopify Admin GraphQL API (Customers, Products, Orders)
+* Builds a `LocalGraph` on the server
+* Displays **customer churn probability**
+* Shows **top‑N product recommendations** per customer
+
+> Clone the repo and explore `examples/analytics-engine/`.
+
+---
+
+## Development
+
+**Prerequisites**
+
+* Node.js **v18+**
+* npm **v10+** (or yarn/pnpm)
+* Deno **v1.x** (for Supabase Edge Functions)
+
+**Build the SDK**
+
+```bash
+npm install
+npm run build
+```
+
+Emits CJS, ESM, and `.d.ts` files to `dist/`.
+
+**Linting**
+
+```bash
+# SDK
+npm run lint
+
+# Supabase Functions
+deno lint supabase/functions
+```
+
+**Formatting**
+
+```bash
+npm run format:check   # check formatting
+npm run format         # apply formatting
+```
+
+**Testing**
+
+```bash
+npm test
+```
+
+> \[!TIP]
+> Consider adding pre‑commit hooks (e.g., `lint-staged`) to enforce style.
+
+---
+
+## Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feat/my-amazing-feature`
+3. Commit: `git commit -m "feat: add amazing feature"`
+4. Push: `git push origin feat/my-amazing-feature`
+5. Open a Pull Request
+
+Please include tests and docs for new features.
+
+---
+
+## Brand & Media Assets
+
+* Store logos at `docs/assets/logo-light.svg` and `docs/assets/logo-dark.svg` (same dimensions).
+* Place your hero demo at `docs/assets/demo.gif` (target ≤ 10 MB, width 1280–1600px).
+* Export additional screenshots to `docs/assets/` and reference them near the relevant sections.
+
+**Record a crisp demo GIF**
+
+1. Record a short MP4 (1080p, 30 fps) with your favorite recorder.
+2. Convert to an optimized GIF with `ffmpeg`:
+
+```bash
+ffmpeg -i input.mp4 -vf "fps=15,scale=1280:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 docs/assets/demo.gif
+```
+
+3. (Optional) Further optimize with `gifsicle`:
+
+```bash
+gifsicle -O3 --colors 128 docs/assets/demo.gif -o docs/assets/demo.gif
+```
+
+**Optional badges** (enable these services, then paste under the main badges):
+
+```md
+[![codecov](https://codecov.io/gh/gratitude5dee/KumoRFM-Typescript-SDK/branch/main/graph/badge.svg)](https://codecov.io/gh/gratitude5dee/KumoRFM-Typescript-SDK)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fa6673.svg)](https://www.conventionalcommits.org/en/v1.0.0/)
+[![Prettier](https://img.shields.io/badge/code%20style-prettier-ff69b4.svg)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/lint-eslint-4B32C3)](https://eslint.org/)
+```
 
 ## Features
 
