@@ -4,34 +4,15 @@ import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
+  { ignores: ['node_modules/**', 'dist/**', 'docs/**', 'shopify-app/**', 'supabase/**'] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   prettier,
   {
-    ignores: [
-      'dist',
-      'docs',
-      'examples',
-      'examples/**',
-      'legacy',
-      'legacy/**',
-      'shopify-app',
-      'shopify-app/**',
-      'supabase',
-      'supabase/**',
-      'node_modules',
-      'kumo-edge-client.ts',
-      'kumo-edge-functions.ts',
-      'kumo-rfm-tests.ts',
-      'kumo-rfm-typescript-sdk.ts',
-    ],
-  },
-  {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: false,
         sourceType: 'module',
         ecmaVersion: 'latest',
       },
