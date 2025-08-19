@@ -3,6 +3,8 @@ docs
 legacy
 legacy/**
 shopify-app
+examples/**
+
 shopify-app/**
 node_modules
 supabase/

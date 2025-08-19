@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "serve": "deno serve --watch supabase/functions/rfm-health/index.ts",
+    "fmt": "deno fmt",
+    "lint": "deno lint"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100
+  }
+}
