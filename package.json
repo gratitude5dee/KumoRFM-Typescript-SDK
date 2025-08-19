@@ -32,6 +32,9 @@
     "url": "https://github.com/gratitude5dee/KumoRFM-Typescript-SDK/issues"
   },
   "homepage": "https://github.com/gratitude5dee/KumoRFM-Typescript-SDK#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
