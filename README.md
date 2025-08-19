@@ -6,15 +6,6 @@
 
 # KumoRFM TypeScript SDK
 
-A fully-typed, modern TypeScript SDK for KumoRFM - a foundation model for business data that provides predictive analytics through a SQL-like query interface.
-
-[![npm version](https://img.shields.io/npm/v/%40kumo-ai%2Frfm-sdk.svg)](https://www.npmjs.com/package/@kumo-ai/rfm-sdk)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg)](https://www.typescriptlang.org/)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Coverage](https://img.shields.io/badge/coverage-90%25-green.svg)](https://github.com/yourusername/kumo-rfm-sdk)
-
-> Complete analytics engine example (SDK + Supabase Edge Functions + Shopify Admin app) is available at `examples/analytics-engine/`. See its guide at [examples/analytics-engine/README.md](examples/analytics-engine/README.md).
-
 <p align="center"><strong>Predictive analytics for business data — type‑safe, isomorphic, and production‑ready.</strong></p>
 
 <p align="center">
