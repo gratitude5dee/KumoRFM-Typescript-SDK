@@ -11,7 +11,13 @@ export default tseslint.config(
     ignores: [
       'dist',
       'docs',
+      'examples',
+      'legacy',
+      'legacy/**',
+      'shopify-app',
+      'shopify-app/**',
       'supabase',
+      'supabase/**',
       'node_modules',
       'kumo-edge-client.ts',
       'kumo-edge-functions.ts',

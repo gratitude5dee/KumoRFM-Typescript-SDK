@@ -1,5 +1,9 @@
 dist
 docs
+legacy
+legacy/**
+shopify-app
+shopify-app/**
 node_modules
 supabase/
 
