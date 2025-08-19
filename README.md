@@ -2,10 +2,12 @@
 
 A fully-typed, modern TypeScript SDK for KumoRFM - a foundation model for business data that provides predictive analytics through a SQL-like query interface.
 
-[![npm version](https://img.shields.io/npm/v/kumo-rfm-sdk.svg)](https://www.npmjs.com/package/kumo-rfm-sdk)
+[![npm version](https://img.shields.io/npm/v/%40kumo-ai%2Frfm-sdk.svg)](https://www.npmjs.com/package/@kumo-ai/rfm-sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg)](https://www.typescriptlang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-green.svg)](https://github.com/yourusername/kumo-rfm-sdk)
+
+> Complete analytics engine example (SDK + Supabase Edge Functions + Shopify Admin app) is available at `examples/analytics-engine/`. See its guide at [examples/analytics-engine/README.md](examples/analytics-engine/README.md).
 
 ## Features
 
@@ -21,17 +23,17 @@ A fully-typed, modern TypeScript SDK for KumoRFM - a foundation model for busine
 ## Installation
 
 ```bash
-npm install kumo-rfm-sdk
+npm install @kumo-ai/rfm-sdk
 # or
-yarn add kumo-rfm-sdk
+yarn add @kumo-ai/rfm-sdk
 # or
-pnpm add kumo-rfm-sdk
+pnpm add @kumo-ai/rfm-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { init, LocalTable, LocalGraph, KumoRFM, PQLBuilder } from 'kumo-rfm-sdk';
+import { LocalTable, LocalGraph, KumoRFM, PQLBuilder } from '@kumo-ai/rfm-sdk';
 
 // Initialize with your API key
 init('your-api-key');
@@ -68,6 +70,20 @@ const query = new PQLBuilder()
 const results = await model.predict(query);
 console.log('Predictions:', results.predictions);
 ```
+
+## Supabase Edge Functions (BFF)
+
+This repository includes Deno-based Supabase Edge Functions that wrap the SDK and expose HTTP endpoints for predictions, graph validation, and PQL construction. See the example guide for curl examples and deployment notes: [examples/analytics-engine/README.md](examples/analytics-engine/README.md).
+
+## Shopify Admin App (Remix + Polaris)
+
+A demo Shopify Admin app scaffold is provided under the example to illustrate end-to-end integration. To integrate in a real app, follow the steps in: [examples/analytics-engine/README.md](examples/analytics-engine/README.md).
+
+## API Documentation
+
+Generated TypeDoc is available in the docs/ folder after running:
+
+- npm run docs
 
 ## Core Concepts
 
@@ -207,7 +223,7 @@ const fraudScores = await model.predict(fraudQuery);
 ### Data Preprocessing
 
 ```typescript
-import { DataFrameUtils } from 'kumo-rfm-sdk';
+import { DataFrameUtils } from '@kumo-ai/rfm-sdk';
 
 // Aggregate data
 const aggregated = DataFrameUtils.aggregate(data, 'user_id', {
@@ -226,7 +242,7 @@ const grouped = DataFrameUtils.groupBy(data, 'category');
 ### Migration from Python
 
 ```typescript
-import { MigrationUtils } from 'kumo-rfm-sdk';
+import { MigrationUtils } from '@kumo-ai/rfm-sdk';
 
 // Convert Python queries
 const pythonQuery = 'PREDICT COUNT(*) FOR user_id WHERE status is not None';
@@ -242,7 +258,7 @@ console.log('Stats:', adapter.describe());
 ### Error Handling
 
 ```typescript
-import { RFMError, ValidationError, APIError } from 'kumo-rfm-sdk';
+import { RFMError, ValidationError, APIError } from '@kumo-ai/rfm-sdk';
 
 try {
   const result = await model.predict(query);
@@ -333,7 +349,7 @@ result = model.predict("PREDICT COUNT(*) FOR user_id")
 
 ```typescript
 // TypeScript
-import { init, LocalTable, LocalGraph, KumoRFM } from 'kumo-rfm-sdk';
+import { LocalTable, LocalGraph, KumoRFM } from '@kumo-ai/rfm-sdk';
 
 init('your-key');
 const table = new LocalTable(data, 'users').inferMetadata();
